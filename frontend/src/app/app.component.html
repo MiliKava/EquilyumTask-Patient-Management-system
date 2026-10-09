@@ -1,0 +1,40 @@
+<div class="app-shell">
+    <aside class="sidebar">
+        <a class="brand" href="#patients" (click)="selectSection('patients')">
+            <span class="brand-mark" aria-hidden="true">+</span>
+            <span><strong>OPDDesk</strong><small>OUTPATIENT CLINIC</small></span>
+        </a>
+        <p class="nav-label">WORKSPACE</p>
+        <nav aria-label="Main navigation">
+            <button type="button" [class.active]="activeSection === 'patients'"
+                [attr.aria-current]="activeSection === 'patients' ? 'page' : null"
+                (click)="selectSection('patients')"><span class="nav-number">01</span><span>Patients</span></button>
+            <button type="button" [class.active]="activeSection === 'appointments'"
+                [attr.aria-current]="activeSection === 'appointments' ? 'page' : null"
+                (click)="selectSection('appointments')"><span
+                    class="nav-number">02</span><span>Appointments</span></button>
+            <button type="button" [class.active]="activeSection === 'consultations'"
+                [attr.aria-current]="activeSection === 'consultations' ? 'page' : null"
+                (click)="selectSection('consultations')"><span
+                    class="nav-number">03</span><span>Consultations</span></button>
+        </nav>
+        <div class="sidebar-foot"><span class="status-dot" aria-hidden="true"></span><span>Outpatient care</span></div>
+    </aside>
+
+    <main class="main-area">
+        <header class="topbar">
+            <div class="topbar-title"><span class="topbar-kicker">CLINIC WORKSPACE</span><span
+                    class="topbar-divider"></span><span class="topbar-context">Outpatient care</span></div>
+            <div class="topbar-date"><span class="online-mark" aria-hidden="true"></span><time>{{ today }}</time></div>
+        </header>
+        <section class="page-content">
+            @if (activeSection === 'patients') {
+            <app-patients />
+            } @else if (activeSection === 'appointments') {
+            <app-appointments />
+            } @else {
+            <app-consultations />
+            }
+        </section>
+    </main>
+</div>

@@ -1,0 +1,252 @@
+:root {
+  color-scheme: light;
+  --ink: #20372d;
+  --green: #3c7650;
+  --muted: #738078;
+  --line: #e0e7e2;
+  --surface: #ffffff;
+  --page: #f2f5f1;
+  --coral: #d78162;
+  font-family: "Segoe UI", Tahoma, sans-serif;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+}
+* {
+  box-sizing: border-box;
+}
+body {
+  min-width: 320px;
+  min-height: 100vh;
+  margin: 0;
+  background-color: var(--page);
+  background-image: radial-gradient(#dce5dd 0.65px, transparent 0.65px);
+  background-size: 18px 18px;
+  color: var(--ink);
+}
+button,
+input,
+select,
+textarea {
+  font-family: inherit;
+}
+button:focus-visible,
+a:focus-visible {
+  outline: 3px solid #8bc59a;
+  outline-offset: 2px;
+}
+
+::selection {
+  background: #d7ead9;
+  color: var(--ink);
+}
+
+app-root .app-shell {
+  grid-template-columns: 248px minmax(0, 1fr);
+  background: rgba(242, 245, 241, 0.88);
+}
+
+app-root .sidebar {
+  z-index: 1;
+  padding: 30px 17px 22px;
+  box-shadow: 8px 0 30px rgba(25, 48, 37, 0.08);
+}
+
+app-root .brand {
+  margin-bottom: 58px;
+}
+
+app-root .brand-mark {
+  width: 40px;
+  border-color: #a0c5a8;
+  border-radius: 11px;
+  background: #2d4e3d;
+  color: #d4f0d8;
+  font-size: 25px;
+}
+
+app-root .brand strong {
+  font-family: Georgia, serif;
+  font-size: 19px;
+  font-weight: 400;
+  letter-spacing: 0;
+}
+
+app-root .brand small {
+  font-size: 8px;
+  letter-spacing: 0.13em;
+}
+
+app-root nav {
+  gap: 7px;
+}
+
+app-root nav button {
+  min-height: 48px;
+  border-radius: 7px;
+  font-size: 13px;
+}
+
+app-root nav button.active {
+  background: #315342;
+  box-shadow: inset 3px 0 0 var(--coral);
+}
+
+app-root .sidebar-foot {
+  padding-top: 17px;
+  border-top: 1px solid rgba(218, 239, 224, 0.14);
+}
+
+app-root .topbar {
+  min-height: 72px;
+  padding-inline: clamp(24px, 4vw, 60px);
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(12px);
+}
+
+app-root .topbar-title,
+app-root .topbar-date {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+}
+
+app-root .topbar-kicker {
+  font-size: 9px;
+  letter-spacing: 0.15em;
+}
+
+app-root .topbar-divider {
+  width: 1px;
+  height: 15px;
+  background: var(--line);
+}
+
+app-root .topbar-context {
+  color: #52645a;
+  font-family: Georgia, serif;
+  font-size: 14px;
+}
+
+app-root .topbar time {
+  color: #596a60;
+  font-size: 11px;
+}
+
+app-root .online-mark {
+  width: 8px;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: #71aa7b;
+  box-shadow: 0 0 0 3px #e5f1e6;
+}
+
+app-root .page-content {
+  padding: clamp(28px, 4.5vw, 62px);
+}
+
+app-patients .feature-layout,
+app-appointments .feature-layout,
+app-consultations .consultation-layout {
+  gap: clamp(20px, 3vw, 36px);
+}
+
+app-patients .form-panel,
+app-patients .list-panel,
+app-appointments .form-panel,
+app-appointments .list-panel,
+app-consultations .form-panel,
+app-consultations .history-panel {
+  padding: 23px;
+  border: 1px solid rgba(215, 225, 217, 0.9);
+  border-radius: 8px;
+  background: var(--surface);
+  box-shadow: 0 7px 24px rgba(32, 55, 45, 0.035);
+}
+
+app-patients .table-wrap,
+app-appointments .table-wrap,
+app-consultations .history-list {
+  overflow: auto;
+  border: 1px solid #e6ece7;
+  border-radius: 6px;
+}
+
+app-patients th,
+app-appointments th {
+  background: #f5f8f5;
+  color: #748178;
+}
+
+app-patients tbody tr,
+app-appointments tbody tr {
+  transition: background 120ms ease;
+}
+
+app-patients tbody tr:hover,
+app-appointments tbody tr:hover {
+  background: #f8faf8;
+}
+
+app-patients .table-message,
+app-appointments .table-message,
+app-consultations .table-message {
+  border: 1px dashed #d8e2da;
+  border-radius: 6px;
+  background: #f8faf8;
+}
+
+app-appointments .status {
+  background: #fcece5;
+  color: #9a563c;
+}
+
+@media (max-width: 760px) {
+  app-root .app-shell {
+    grid-template-columns: 1fr;
+  }
+
+  app-root .sidebar {
+    padding: 14px 16px 10px;
+    box-shadow: 0 5px 18px rgba(25, 48, 37, 0.1);
+  }
+
+  app-root .brand {
+    margin: 0 4px 14px;
+  }
+
+  app-root .topbar {
+    min-height: 54px;
+    padding-inline: 18px;
+  }
+
+  app-root .topbar-context,
+  app-root .topbar-divider {
+    display: none;
+  }
+
+  app-root .page-content {
+    padding: 26px 20px 40px;
+  }
+}
+
+@media (max-width: 540px) {
+  app-patients .form-panel,
+  app-patients .list-panel,
+  app-appointments .form-panel,
+  app-appointments .list-panel,
+  app-consultations .form-panel,
+  app-consultations .history-panel {
+    padding: 18px;
+  }
+}
+
+@media (max-width: 420px) {
+  app-root nav button {
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  app-root .topbar time {
+    font-size: 10px;
+  }
+}

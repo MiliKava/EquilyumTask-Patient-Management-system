@@ -1,0 +1,66 @@
+<div class="section-heading">
+    <div>
+        <p class="eyebrow">SCHEDULE</p>
+        <h1>Appointments</h1>
+    </div>
+    <div class="view-switch" role="group" aria-label="Appointment list view"><button type="button"
+            [class.selected]="!todayOnly" (click)="setTodayOnly(false)">All</button><button type="button"
+            [class.selected]="todayOnly" (click)="setTodayOnly(true)">Today</button></div>
+</div>
+<div class="feature-layout">
+    <section class="form-panel" aria-labelledby="book-heading">
+        <h2 id="book-heading">Book appointment</h2>
+        <p class="panel-caption">Choose a patient and add a visit time.</p>
+        <form #appointmentForm="ngForm" (ngSubmit)="bookAppointment()">
+            <label>Patient<select name="patientId" [(ngModel)]="form.patientId" required>
+                    <option [ngValue]="null" disabled>Select a patient</option>@for (patient of patients; track
+                    patient.id) { <option [ngValue]="patient.id">{{ patient.name }} · #{{ patient.id }}</option> }
+                </select></label>
+            <label>Doctor name<input name="doctorName" [(ngModel)]="form.doctorName" required maxlength="100" /></label>
+            <div class="form-row"><label>Date<input name="appointmentDate" type="date"
+                        [(ngModel)]="form.appointmentDate" required /></label><label>Time<input name="appointmentTime"
+                        type="time" [(ngModel)]="form.appointmentTime" required /></label></div>
+            <button class="primary-button" type="submit"
+                [disabled]="appointmentForm.invalid || saving || patients.length === 0">{{ saving ? 'Booking...' : 'Book
+                appointment' }}</button>
+        </form>
+        @if (patients.length === 0 && !error) { <p class="notice">Register a patient before booking.</p> }
+        @if (message) { <p class="notice success" role="status">{{ message }}</p> }
+        @if (error) { <p class="notice error" role="alert">{{ error }}</p> }
+    </section>
+    <section class="list-panel" aria-labelledby="appointments-heading">
+        <div class="list-heading">
+            <div>
+                <h2 id="appointments-heading">{{ todayOnly ? "Today's appointments" : 'All appointments' }}</h2>
+                <p class="panel-caption">Visits ordered by date and time.</p>
+            </div><span class="record-count">{{ appointments.length }} visits</span>
+        </div>
+        @if (loading) { <p class="table-message">Loading appointments...</p> }
+        @else if (appointments.length === 0) { <p class="table-message">No appointments in this view.</p> }
+        @else {
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Patient</th>
+                        <th>Doctor</th>
+                        <th>Visit</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>@for (appointment of appointments; track appointment.id) {
+                    <tr>
+                        <td><strong>{{ appointment.patientName }}</strong><small>#{{ appointment.id }}</small></td>
+                        <td>{{ appointment.doctorName }}</td>
+                        <td>{{ appointment.appointmentDate | date:'mediumDate' }}<small>{{ appointment.appointmentTime |
+                                slice:0:5 }}</small></td>
+                        <td><span class="status" [class.completed]="appointment.status === 'COMPLETED'">{{
+                                appointment.status }}</span></td>
+                    </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+        }
+    </section>
+</div>

@@ -1,0 +1,67 @@
+<div class="section-heading">
+    <div>
+        <p class="eyebrow">PATIENT RECORDS</p>
+        <h1>Patients</h1>
+    </div>
+    <span class="record-count">{{ patients.length }} shown</span>
+</div>
+<div class="feature-layout">
+    <section class="form-panel" aria-labelledby="register-heading">
+        <h2 id="register-heading">Register patient</h2>
+        <p class="panel-caption">Add a patient to the clinic directory.</p>
+        <form #patientForm="ngForm" (ngSubmit)="registerPatient()">
+            <label>Name<input name="name" [(ngModel)]="form.name" required maxlength="100"
+                    autocomplete="name" /></label>
+            <div class="form-row">
+                <label>Age<input name="age" type="number" [(ngModel)]="form.age" required min="1" max="120" /></label>
+                <label>Gender<select name="gender" [(ngModel)]="form.gender" required>
+                        <option value="" disabled>Select</option>
+                        <option>Female</option>
+                        <option>Male</option>
+                        <option>Other</option>
+                    </select></label>
+            </div>
+            <label>Phone number<input name="phone" [(ngModel)]="form.phone" required pattern="[0-9+() -]{7,20}"
+                    maxlength="20" autocomplete="tel" /></label>
+            <button class="primary-button" type="submit" [disabled]="patientForm.invalid || saving">{{ saving ?
+                'Saving...' : 'Add patient' }}</button>
+        </form>
+        @if (message) { <p class="notice success" role="status">{{ message }}</p> }
+        @if (error) { <p class="notice error" role="alert">{{ error }}</p> }
+    </section>
+    <section class="list-panel" aria-labelledby="directory-heading">
+        <div class="list-heading">
+            <div>
+                <h2 id="directory-heading">Patient directory</h2>
+                <p class="panel-caption">Search by name or phone number.</p>
+            </div>
+        </div>
+        <form class="search-form" (ngSubmit)="searchPatients()">
+            <label class="visually-hidden" for="patient-search">Search patients</label>
+            <input id="patient-search" name="keyword" [(ngModel)]="keyword" placeholder="Name or phone number" />
+            <button class="secondary-button" type="submit" [disabled]="loading">Search</button>
+            @if (keyword) { <button class="text-button" type="button"
+                (click)="keyword = ''; loadPatients()">Clear</button> }
+        </form>
+        @if (loading) { <p class="table-message">Loading patients...</p> }
+        @else if (patients.length === 0) { <p class="table-message">No patients found.</p> }
+        @else {
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Patient</th>
+                        <th>Age / gender</th>
+                        <th>Phone</th>
+                    </tr>
+                </thead>
+                <tbody>@for (patient of patients; track patient.id) { <tr>
+                        <td><strong>{{ patient.name }}</strong><small>#{{ patient.id }}</small></td>
+                        <td>{{ patient.age }} / {{ patient.gender }}</td>
+                        <td>{{ patient.phone }}</td>
+                    </tr> }</tbody>
+            </table>
+        </div>
+        }
+    </section>
+</div>

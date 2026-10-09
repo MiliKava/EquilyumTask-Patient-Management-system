@@ -1,0 +1,59 @@
+<div class="section-heading">
+    <div>
+        <p class="eyebrow">VISIT NOTES</p>
+        <h1>Consultations</h1>
+    </div>
+</div>
+<div class="consultation-layout">
+    <section class="form-panel" aria-labelledby="consultation-heading">
+        <h2 id="consultation-heading">Consultation note</h2>
+        <p class="panel-caption">Save notes for an appointment, then mark the visit complete.</p>
+        <form #consultationForm="ngForm" (ngSubmit)="saveConsultation()">
+            <label>Appointment<select name="appointmentId" [ngModel]="selectedAppointmentId"
+                    (ngModelChange)="selectAppointment($event)" required>
+                    <option [ngValue]="null" disabled>Select an appointment</option>@for (appointment of appointments;
+                    track appointment.id) { <option [ngValue]="appointment.id">{{ appointment.patientName }} · {{
+                        appointment.appointmentDate | date:'mediumDate' }} · {{ appointment.doctorName }}</option> }
+                </select></label>
+            <label>Diagnosis<input name="diagnosis" [(ngModel)]="form.diagnosis" required maxlength="500" /></label>
+            <label>Short notes<textarea name="notes" [(ngModel)]="form.notes" rows="4"
+                    maxlength="2000"></textarea></label>
+            <div class="form-actions"><button class="primary-button" type="submit"
+                    [disabled]="consultationForm.invalid || saving || loading || savedConsultation?.status === 'COMPLETED'">{{
+                    saving ? 'Saving...' : 'Save consultation' }}</button><button class="secondary-button" type="button"
+                    [disabled]="!savedConsultation || savedConsultation.status === 'COMPLETED' || completing"
+                    (click)="completeConsultation()">{{ completing ? 'Completing...' : 'Mark complete' }}</button></div>
+        </form>
+        @if (savedConsultation) { <p class="saved-status">Saved as <strong>{{ savedConsultation.status }}</strong></p> }
+        @if (message) { <p class="notice success" role="status">{{ message }}</p> }
+        @if (error) { <p class="notice error" role="alert">{{ error }}</p> }
+    </section>
+    <section class="history-panel" aria-labelledby="history-heading">
+        <div class="list-heading">
+            <div>
+                <h2 id="history-heading">Completed visits</h2>
+                <p class="panel-caption">Consultation history for a selected patient.</p>
+            </div>
+        </div>
+        <label class="patient-picker">Patient<select name="historyPatientId" [(ngModel)]="selectedPatientId"
+                (ngModelChange)="loadCompletedConsultations()">
+                <option [ngValue]="null">Select a patient</option>@for (patient of patients; track patient.id) { <option
+                    [ngValue]="patient.id">{{ patient.name }} · #{{ patient.id }}</option> }
+            </select></label>
+        @if (loading) { <p class="table-message">Loading visits...</p> }
+        @else if (selectedPatientId === null) { <p class="table-message">Choose a patient to view completed
+            consultations.</p> }
+        @else if (completedConsultations.length === 0) { <p class="table-message">No completed consultations for this
+            patient.</p> }
+        @else {
+        <div class="history-list">@for (consultation of completedConsultations; track consultation.id) {
+            <article class="visit-entry">
+                <div class="visit-meta"><strong>{{ consultation.appointmentDate | date:'mediumDate' }}</strong><span>{{
+                        consultation.doctorName }}</span></div>
+                <h3>{{ consultation.diagnosis }}</h3>@if (consultation.notes) { <p>{{ consultation.notes }}</p> }
+            </article>
+            }
+        </div>
+        }
+    </section>
+</div>
