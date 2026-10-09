@@ -12,12 +12,12 @@ A small outpatient department management module for registering patients, bookin
 
 ## Technology
 
-| Area | Technology |
-| --- | --- |
-| Backend | Java 17, Spring Boot 3.3, Spring Web, Spring Data JPA, Bean Validation |
-| Database | MySQL 8, MySQL Connector/J |
-| Frontend | Angular 18 standalone components, TypeScript, HTML, CSS, HttpClient |
-| Build tools | Maven 3.8+, Node.js 22+, npm |
+| Area        | Technology                                                             |
+| ----------- | ---------------------------------------------------------------------- |
+| Backend     | Java 17, Spring Boot 3.3, Spring Web, Spring Data JPA, Bean Validation |
+| Database    | MySQL 8, MySQL Connector/J                                             |
+| Frontend    | Angular 18 standalone components, TypeScript, HTML, CSS, HttpClient    |
+| Build tools | Maven 3.8+, Node.js 22+, npm                                           |
 
 ## Architecture
 
@@ -46,36 +46,15 @@ There are no service interfaces or extra application layers; constructor injecti
 
 ### Data Model
 
-```mermaid
-erDiagram
-    PATIENT ||--o{ APPOINTMENT : books
-    APPOINTMENT ||--o| CONSULTATION : has
+The system uses three tables. A patient may have multiple appointments; an appointment may have zero or one consultation. The consultation's unique appointment reference prevents duplicate consultation records.
 
-    PATIENT {
-        bigint id PK
-        varchar name
-        int age
-        varchar gender
-        varchar phone
-    }
-    APPOINTMENT {
-        bigint id PK
-        bigint patient_id FK
-        varchar doctor_name
-        date appointment_date
-        time appointment_time
-        varchar status
-    }
-    CONSULTATION {
-        bigint id PK
-        bigint appointment_id FK_UQ
-        varchar diagnosis
-        varchar notes
-        varchar status
-    }
+```mermaid
+flowchart LR
+  Patient["Patient<br/>id: BIGINT PK<br/>name, age, gender, phone"] -->|one to many| Appointment["Appointment<br/>id: BIGINT PK<br/>patient_id: BIGINT FK<br/>doctor, date, time, status"]
+  Appointment -->|one to zero-or-one| Consultation["Consultation<br/>id: BIGINT PK<br/>appointment_id: BIGINT UNIQUE FK<br/>diagnosis, notes, status"]
 ```
 
-`Patient` has many appointments; each appointment references one patient. A consultation has a one-to-one reference to its appointment. The unique constraint on `consultations.appointment_id` prevents duplicate consultations at the database level. Patient and appointment details in API responses are flattened into DTO fields to avoid entity recursion.
+API responses flatten patient and appointment details into DTO fields instead of serializing JPA relationships directly.
 
 ### Consultation Workflow
 
@@ -185,11 +164,11 @@ All endpoints use JSON except GET requests. Date fields use `YYYY-MM-DD`; appoin
 
 ### Patients
 
-| Method | Endpoint | Description | Success |
-| --- | --- | --- | --- |
-| `POST` | `/api/patients` | Create patient | `201 Created` |
-| `GET` | `/api/patients` | List all patients | `200 OK` |
-| `GET` | `/api/patients/search?keyword=asha` | Search name or phone | `200 OK` |
+| Method | Endpoint                            | Description          | Success       |
+| ------ | ----------------------------------- | -------------------- | ------------- |
+| `POST` | `/api/patients`                     | Create patient       | `201 Created` |
+| `GET`  | `/api/patients`                     | List all patients    | `200 OK`      |
+| `GET`  | `/api/patients/search?keyword=asha` | Search name or phone | `200 OK`      |
 
 Create patient request:
 
@@ -218,11 +197,11 @@ Name, age, gender, and phone are required. Age must be between 1 and 120; phone 
 
 ### Appointments
 
-| Method | Endpoint | Description | Success |
-| --- | --- | --- | --- |
-| `POST` | `/api/appointments` | Book for an existing patient | `201 Created` |
-| `GET` | `/api/appointments` | List all, ordered by date/time | `200 OK` |
-| `GET` | `/api/appointments/today` | List appointments for today | `200 OK` |
+| Method | Endpoint                  | Description                    | Success       |
+| ------ | ------------------------- | ------------------------------ | ------------- |
+| `POST` | `/api/appointments`       | Book for an existing patient   | `201 Created` |
+| `GET`  | `/api/appointments`       | List all, ordered by date/time | `200 OK`      |
+| `GET`  | `/api/appointments/today` | List appointments for today    | `200 OK`      |
 
 Book appointment request:
 
@@ -239,11 +218,11 @@ The response includes `id`, `patientId`, `patientName`, `doctorName`, `appointme
 
 ### Consultations
 
-| Method | Endpoint | Description | Success |
-| --- | --- | --- | --- |
-| `POST` | `/api/consultations` | Create or update an incomplete consultation for an appointment | `201 Created` when created; `200 OK` when updated |
-| `PUT` | `/api/consultations/{id}/complete` | Complete the consultation and its appointment | `200 OK` |
-| `GET` | `/api/consultations/patient/{patientId}` | List completed consultations for a patient | `200 OK` |
+| Method | Endpoint                                 | Description                                                    | Success                                           |
+| ------ | ---------------------------------------- | -------------------------------------------------------------- | ------------------------------------------------- |
+| `POST` | `/api/consultations`                     | Create or update an incomplete consultation for an appointment | `201 Created` when created; `200 OK` when updated |
+| `PUT`  | `/api/consultations/{id}/complete`       | Complete the consultation and its appointment                  | `200 OK`                                          |
+| `GET`  | `/api/consultations/patient/{patientId}` | List completed consultations for a patient                     | `200 OK`                                          |
 
 Save consultation request:
 
